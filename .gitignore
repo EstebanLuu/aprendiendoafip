@@ -41,3 +41,9 @@ dist
 out
 .DS_Store
 *.log*
+
+# Ignorar certificados y claves
+certificado.crt
+certificadoTest.crt
+key.key
+testKey.key

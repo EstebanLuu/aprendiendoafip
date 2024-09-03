@@ -1,25 +1,23 @@
+require('dotenv').config(); // Importa dotenv para usar variables de entorno
 const Afip = require('@afipsdk/afip.js');
 const fs = require('fs');
 
 // CUIT del contribuyente
-const taxId = 20432405649;
+const taxId = process.env.AFIP_CUIT;
 // Usuario para ingresar a AFIP
-const username = '20432405649';
+const username = process.env.AFIP_USERNAME;
 // Contraseña para ingresar a AFIP
-// const password = 'Estte12345';
-// // Alias para el certificado
-// const alias = 'gemini';
-
-// DATOS DE TESTING
-const password = 'gestini';
+const password = process.env.AFIP_PASSWORD;
 // Alias para el certificado
-const alias = 'gestini';
+const alias = process.env.AFIP_ALIAS;
+
+// Ruta del certificado y clave privada de testing
+const certTestPath = process.env.AFIP_CERTIFICATE_TEST_PATH;
+const testKeyPath = process.env.AFIP_TEST_KEY_PATH;
 
 // Creamos una instancia de la librería
 const afip = new Afip({
     CUIT: taxId,
-    // access_token: 'K3fxRhkPqdfiryMsek05eHBVxCgT7Xo2qvJJl3hbBOL3LtgHLsb0e6QfKOwPXurc',
-    // production: true
 });
 
 // Crear el certificado y clave privada
@@ -27,12 +25,10 @@ const afip = new Afip({
     try {
         const res = await afip.CreateCert(username, password, alias);
 
-        // Guarda el certificado y la clave en archivos (opcional)
-        // fs.writeFileSync('./certificado.crt', res.cert, { encoding: 'utf8' });
-        // fs.writeFileSync('./key.key', res.key, { encoding: 'utf8' });
+        fs.writeFileSync(certTestPath, res.cert, { encoding: 'utf8' });
+        fs.writeFileSync(testKeyPath, res.key, { encoding: 'utf8' });
 
-        fs.writeFileSync('./certificadoTest.crt', res.cert, { encoding: 'utf8' });
-        fs.writeFileSync('./testKey.key', res.key, { encoding: 'utf8' });
+        console.log('Certificado y clave privada generados y guardados correctamente.');
     } catch (error) {
         console.error('Error al crear el certificado:', error);
     }
